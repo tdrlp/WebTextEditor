@@ -9,9 +9,10 @@
     
         <script>
             $(document).ready(function(){
-                
+
                 var loadedContent="";
                 var selectedFile="";
+                var currentContent="";
 
                 // Request for getting the file names.
                 $.ajax({
@@ -63,29 +64,48 @@
                 // Save the files contents if any changes have occured.
                 $("#save").click( function() {
 
-                    var currentContent = $("#editor").val();
+                    currentContent = $("#editor").val();
                     if(currentContent != loadedContent) {
                     
                         $.ajax({
-                            url: 'index.php',
+                            url : 'index.php',
                             type : 'GET',
                             dataType: 'json',
                             data : { saveFile:selectedFile, saveContent:currentContent },
                             success : function(result) {
+
                                 $("#saveResult").text(result["writeResult"]);
                             }
                         })
                     }
-                })
+                    else {
+                        $("#saveResult").text("Nothing to save");
+                    }
+
+                    setTimeout(responseFadeOut, 5000);
+                });
+
+                $(window).bind('beforeunload', function(){
+
+                    return "Are you sure you want to leave?\nChanges to your work my not be saved.";
+                });
+
             });
+
+            function responseFadeOut() {
+                $("#saveResult").text("");
+            }
         </script>
 
         <button id="fileSelect" type="button">Open file</button>
         <br />
         <textarea id="editor"></textarea>
         <br />
-        <button id="save" disabled>Save Work</button>
-        <p id="saveResult"></p>
+
+        <div id="saveContainer">
+            <button id="save" disabled>Save Work</button>
+            <p id="saveResult"></p>
+        </div>
 
         <hr />
 </body>

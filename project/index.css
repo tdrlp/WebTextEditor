@@ -8,3 +8,15 @@
     width: 94%;
     height: 500px;
 }
+
+#save {
+
+    display: inline-block;
+}
+
+#saveResult {
+
+    display: inline-block;
+    color: red;
+    line-height: 50%;
+}

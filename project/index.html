@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Text Editor</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="index.css">
+</head>
+<body>
+
+    <script>
+        $(document).ready(function(){
+                $.ajax({
+                    url : 'index.php',
+                    type : 'GET',
+                    dataType : 'json',
+                    success : function (result) {
+                        $("body").append("<select id=\"fileList\" name=\"file\">");
+                        jQuery.each(result, function(index, value){
+                            $("#fileList").append("<option value=\"" + result[index] + "\">" + result[index] + "</option>");
+                        });
+                        $("body").append("</select>");
+                    }
+                });
+            });
+    </script>
+</body>
+</html>

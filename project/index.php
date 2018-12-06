@@ -1,59 +1,43 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <title>Text Editor</title>
-        <link rel="stylesheet" type="text/css" href="index.css">
-    </head>
-    <body>
+<?php
+    // Get the servers abosulte root directroy via the current working directroy.
+    $root = dirname(getcwd());
+
+    // Get the MyFiles absolute directroy.
+    $myFilePath = $root . "\\MyFiles";
     
-        <form action="index.php" method="GET">
+    // If the MyFiles directroy does not exist, output an error and terminate the script.
+    // Otherwise, get an array of files in the MyFiles directroy.
+    if(!file_exists($myFilePath)) {
+    
+        die("The MyFiles directroy is missing!"); 
+    }
 
-            <?php
-                // Get the servers abosulte root directroy via the current working directroy.
-                $root = dirname(getcwd());
-        
-                // Get the MyFiles absolute directroy.
-                $myFilePath = $root . "\\MyFiles";
-                
-                // If the MyFiles directroy does not exist, output an error and terminate the script.
-                // Otherwise, get an array of files in the MyFiles directroy.
-                if(!file_exists($myFilePath)) {
-                
-                    die("The MyFiles directroy is missing!"); 
-                }
+    // Get an array of files from the MyFiles directroy.
+    $myFiles = scandir($myFilePath);
 
-                // Get an array of files from the MyFiles directroy.
-                $myFiles = scandir($myFilePath);
-            
-                // Remove the current and parent directory links.
-                unset($myFiles[0], $myFiles[1]);
-            
-                // Rebase the array indicies after the unsets.
-                $myFiles = array_values($myFiles);
+    // Remove the current and parent directory links.
+    unset($myFiles[0], $myFiles[1]);
 
-                // Iterate through the file array and add each file to the json data array.
-                for($i = 0; $i < sizeof($myFiles); $i++) {
+    // Rebase the array indicies after the unsets.
+    $myFiles = array_values($myFiles);
 
-                    $data['file' . strval($i)] = $myFiles[$i];
-                }
+    // Iterate through the file array and add each file to the json data array.
+    for($i = 0; $i < sizeof($myFiles); $i++) {
 
-                // Check if the server has recieved any requests.
-                if($_SERVER["REQUEST_METHOD"] == "GET" && $_GET != null) {
+        $data['file' . strval($i)] = $myFiles[$i];
+    }
 
-                    $data['fileName'] = $_GET["file"];
+    // Check if the server has recieved any requests.
+    if($_SERVER["REQUEST_METHOD"] == "GET" && $_GET != null) {
 
-                    $fileToOpen = $myFilePath . "\\" . $_GET["file"];
+        $file['fileName'] = $_GET["file"];
 
-                    $handle = fopen($fileToOpen, "r") or die("<br /><br />Unable to open " . $_GET["file"]);
+        $fileToOpen = $myFilePath . "\\" . $_GET["file"];
 
-                    $data['fileContent'] = fread($handle, filesize($fileToOpen));
-                }
+        $handle = fopen($fileToOpen, "r") or die("<br /><br />Unable to open " . $_GET["file"]);
 
-                echo json_encode($data);
-            ?>
+        $file['fileContent'] = fread($handle, filesize($fileToOpen));
+    }
 
-            <br/>
-            <textarea id="textArea"></textarea>
-        </form>
-    </body>
-</html>
+    echo json_encode($data);
+?>

@@ -77,8 +77,12 @@
                                     $("#saveResult").text(result["writeResult"]);
                                     loadedContent = $("#editor").val();
                                     $("#save").attr("disabled", true);
+                                },
+                                fail : function() {
+                                    $("#saveResult").css("color", "red");
+                                    $("#saveResult").text("Unable to save the file. Possible server error");
                                 }
-                            })
+                            });
                         }
 
                         setTimeout(responseFadeOut, 5000);

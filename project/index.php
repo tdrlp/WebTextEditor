@@ -28,16 +28,38 @@
     }
 
     // Check if the server has recieved any requests.
-    if($_SERVER["REQUEST_METHOD"] == "GET" && $_GET != null) {
+    if($_SERVER["REQUEST_METHOD"] == "GET" && $_GET["file"] != null) {
 
-        $file['fileName'] = $_GET["file"];
+        // Get the file name send sent to the server
+        $data['requestedFileName'] = $_GET["file"];
 
+        // Create the file path.
         $fileToOpen = $myFilePath . "\\" . $_GET["file"];
 
+        // Try to open the file.
         $handle = fopen($fileToOpen, "r") or die("<br /><br />Unable to open " . $_GET["file"]);
 
-        $file['fileContent'] = fread($handle, filesize($fileToOpen));
+        // Add the file contnet to the file array.
+        $data['fileContent'] = fread($handle, filesize($fileToOpen));
+    }
+    else if($_SERVER["REQUEST_METHOD"] == "GET" && $_GET["saveFile"] != null && $_GET["saveContent"] != null) {
+
+        $contentToSave = $_GET['saveContent'];
+
+        $fileToOpen = $myFilePath . "\\" . $_GET['saveFile'];
+
+        if(!file_put_contents($fileToOpen, $contentToSave)) {
+
+            $data["writeResult"] = "Failed to save the file.";
+        }
+        else {
+
+            $data["writeResult"] = "File saved.";
+        }
     }
 
+
+
+    // Send the data encoded as json.
     echo json_encode($data);
 ?>

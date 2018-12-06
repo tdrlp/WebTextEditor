@@ -6,22 +6,87 @@
     <link rel="stylesheet" href="index.css">
 </head>
 <body>
+    
+        <script>
+            $(document).ready(function(){
+                
+                var loadedContent="";
+                var selectedFile="";
 
-    <script>
-        $(document).ready(function(){
+                // Request for getting the file names.
                 $.ajax({
                     url : 'index.php',
                     type : 'GET',
                     dataType : 'json',
                     success : function (result) {
-                        $("body").append("<select id=\"fileList\" name=\"file\">");
+
+                        // Create a dropdown menu displaying a list of files.
+                        $("body").prepend("<select id=\"fileList\" name=\"file\">");
+                        
+                        // Default option.
+                        $("#fileList").append("<option value=\"\"  selected disabled hidden>Select a file...</option>");
+
+                        // Iterate through the the result of files and create options for them.
                         jQuery.each(result, function(index, value){
+
                             $("#fileList").append("<option value=\"" + result[index] + "\">" + result[index] + "</option>");
                         });
-                        $("body").append("</select>");
+                        $("body").prepend("</select>");
                     }
                 });
+
+
+                // Request for getting the selected files when the "Open File" button is clicked.
+                $("#fileSelect").click( function() {
+
+                    var select = document.getElementById("fileList");
+                    selectedFile = select.options[select.selectedIndex].value;
+
+                    $.ajax({
+                        url : 'index.php',
+                        tpye : 'GET',
+                        dataType : 'json',
+                        data : {file:$("#fileList").find(":selected").text()},
+                        success : function (result) {
+                            
+                            // Set the text of the text area to the files contents and save the original data.
+                            if(result['fileContent'] != false) {
+                                $("#editor").val(result['fileContent']);
+                                $("#save").attr("disabled", false);
+                                loadedContent = $("#editor").val();
+                            }
+                        }
+                    });
+                });
+
+
+                // Save the files contents if any changes have occured.
+                $("#save").click( function() {
+
+                    var currentContent = $("#editor").val();
+                    if(currentContent != loadedContent) {
+                    
+                        $.ajax({
+                            url: 'index.php',
+                            type : 'GET',
+                            dataType: 'json',
+                            data : { saveFile:selectedFile, saveContent:currentContent },
+                            success : function(result) {
+                                $("#saveResult").text(result["writeResult"]);
+                            }
+                        })
+                    }
+                })
             });
-    </script>
+        </script>
+
+        <button id="fileSelect" type="button">Open file</button>
+        <br />
+        <textarea id="editor"></textarea>
+        <br />
+        <button id="save" disabled>Save Work</button>
+        <p id="saveResult"></p>
+
+        <hr />
 </body>
 </html>

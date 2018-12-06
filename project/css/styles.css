@@ -1,0 +1,104 @@
+html, body {
+    font-family: Arial;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+    color: #555555;
+}
+
+body {
+    background-image: url("../img/bg.jpg");
+}
+
+h1 {
+    font-size: 75px;
+}
+
+textarea {
+    font-family: Arial;
+    width: 100%;
+    height: 100%;
+    border: 1px solid lightgray;
+}
+
+textarea:hover {
+    border: 1px solid black;
+}
+
+.wrapper {
+    width: 60%;
+    height: 100%;
+    position: absolute;
+    left: 20%;
+    right: 20%;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 3%;
+}
+
+.instructions {   
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    border: 1px solid lightgray;
+    background-color: white;
+}
+
+.instructions:hover {
+    border: 1px solid black;
+}
+
+
+.text-select {
+    padding-top: 10px;
+    padding-bottom: 5px;   
+}
+
+.text {
+    padding-top: 10px;
+    height: 40%;
+}
+
+#saveResult {
+    padding-left: 25%;
+    color: darkgreen;
+}
+
+#fileSelect, #fileSave , select {
+    border-radius: 2px;
+    font-size: 16px;
+    background-color: #555555;
+    border: 2px solid #555555;
+    padding: 10px 24px;
+    color: white;
+}
+
+#fileSave:disabled {
+    background-color: darkgray;
+    border: 2px solid darkgray;
+}
+
+#fileSelect:hover, #fileSave:hover:enabled {
+    background-color: white;
+    color: #555555;
+}
+
+select {
+    width: 400px;
+    background-color: white;
+    color: #555555;
+    border: 1px solid lightgray;
+}
+
+select:hover {
+    border: 1px solid black;
+}
+
+.footer {
+    padding-top: 30px;
+    font-size: 11px;
+    float: right;
+}

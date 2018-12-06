@@ -1,17 +1,3 @@
-<!--
-
-    File: index.php
-
-    Programers: Conor Macpherson, Tudor Lupu
-
-    First-version: 2018-12-06
-
-    Description: This file contains the php script for reading a directoy's files, sending the file names,
-                 sending file content, and saving edited contents.
-
-                 This script is used for the front-end text editing browser application.
-
--->
 <?php
     // Get the servers abosulte root directroy via the current working directroy.
     $root = dirname(getcwd());
@@ -56,28 +42,22 @@
         // Add the file contnet to the file array.
         $data['fileContent'] = fread($handle, filesize($fileToOpen));
     }
-    // Chec kif the server recieved a request for saving the file contents.
     else if($_SERVER["REQUEST_METHOD"] == "GET" && $_GET["saveFile"] != null && $_GET["saveContent"] != null) {
 
-        // Get the file content.
         $contentToSave = $_GET['saveContent'];
 
-        // Get the path to the file.
         $fileToOpen = $myFilePath . "\\" . $_GET['saveFile'];
 
-        // Try to overwrite the file.
-        // Send a failed message if it could not write.
-        // Otherwise, send a saved message.
         if(!file_put_contents($fileToOpen, $contentToSave)) {
 
             $data["writeResult"] = "Failed to save the file.";
         }
         else {
 
-            $data["writeResult"] = "File saved.";
+            $data["writeResult"] = "File saved succesfuly.";
         }
     }
-
+    
     // Send the data encoded as json.
     echo json_encode($data);
 ?>

@@ -1,148 +1,171 @@
 <!DOCTYPE html>
-<html>
-    <head>
-        <title>Text Editor</title>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-        <link rel="stylesheet" href="index.css">
-    </head>
-    <body>
-        
-            <script>
-                $(document).ready(function(){
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Assignment 7 - jQuery and JSON</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="shortcut icon" href="#" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+</head>
+<body>
+    <div class="wrapper">
 
-                    var loadedContent="";
-                    var selectedFile="";
-                    var currentContent="";
+        <!-- TITLE OF THE PAGE -->
+        <div class="header"><h1>Web Text Editor</h1></div>
 
-                    // Request for getting the file names.
-                    $.ajax({
-                        url : 'index.php',
-                        type : 'GET',
-                        dataType : 'json',
-                        success : function (result) {
+        <!-- INSTRUCTIONS FOR USER ON HOW TO USE PAGE -->
+        <div class="instructions">
+            <p><strong>Instructions:</strong> Select a file from the drop down below, make 
+                changes to it and then save your changes using the 'Save' button on the right side.</p>
+        </div>
 
-                            // Create a dropdown menu displaying a list of files.
-                            $("body").prepend("<select id=\"fileList\" name=\"file\">");
-                            
-                            // Default option.
-                            $("#fileList").append("<option value=\"\"  selected disabled hidden>Select a file...</option>");
+        <!-- TEXT EDITOR CONTROLS -->
+        <div class="text-select">
+            <!-- DROP DOWN MENU FOR FILE SELECTION -->
+            <select id="fileList" name="file">
+                <option value="\" selected disabled hidden>select a file...</option>
+            </select>
 
-                            // Iterate through the the result of files and create options for them.
-                            jQuery.each(result, function(index, value){
+            <!-- OPEN FILE BUTTON -->
+            <input id="fileSelect" type="button" value="Open File" />
+            
+            <!-- SAVE STATUS MESSAGE -->
+            <strong><span id="saveResult"></span></strong>
 
-                                $("#fileList").append("<option value=\"" + result[index] + "\">" + result[index] + "</option>");
-                            });
-                            $("body").prepend("</select>");
-                        }
-                    });
+            <!-- SAVE FILE BUTTON -->
+            <input id="fileSave" type="button" value="Save" style="float: right;" disabled />
+        </div>
 
-
-                    // Request for getting the selected files when the "Open File" button is clicked.
-                    $("#fileSelect").click( function() {
-
-                        var select = document.getElementById("fileList");
-                        selectedFile = select.options[select.selectedIndex].value;
-
-                        $.ajax({
-                            url : 'index.php',
-                            tpye : 'GET',
-                            dataType : 'json',
-                            data : {file:$("#fileList").find(":selected").text()},
-                            success : function (result) {
-                                
-                                // Set the text of the text area to the files contents and save the original data.
-                                if(result['fileContent'] != false) {
-                                    $("#editor").val(result['fileContent']);
-                                    loadedContent = $("#editor").val();
-                                }
-                            }
-                        });
-                    });
-
-
-                    // Save the files contents if any changes have occured.
-                    $("#save").click( function() {
-
-                        currentContent = $("#editor").val();
-                        if(currentContent != loadedContent) {
-                        
-                            $.ajax({
-                                url : 'index.php',
-                                type : 'GET',
-                                dataType: 'json',
-                                data : { saveFile:selectedFile, saveContent:currentContent },
-                                success : function(result) {
-
-                                    $("#saveResult").css("color", "green"); 
-                                    $("#saveResult").text(result["writeResult"]);
-                                    loadedContent = $("#editor").val();
-                                    $("#save").attr("disabled", true);
-                                },
-                                fail : function() {
-                                    $("#saveResult").css("color", "red");
-                                    $("#saveResult").text("Unable to save the file. Possible server error");
-                                }
-                            });
-                        }
-
-                        setTimeout(responseFadeOut, 5000);
-                    });
-
-
-                    // If any text in the editor changes, check if the content is the orignal, or
-                    // if anything has been added. If the ladder if true, enable the save button.
-                    // Otherwise, disable it.
-                    $("#editor").keyup( function() {
-
-                        currentContent = $("#editor").val();
-                        if(currentContent != loadedContent) {
-
-                            $("#save").attr("disabled", false);
-                        }
-                        else {
-                            
-                            $("#save").attr("disabled", true);
-                        }
-                    });
-
-
-                    // If any text in the editor changes, check if the content is the orignal, or
-                    // if anything has been added. If the ladder if true, enable the save button.
-                    // Otherwise, disable it.
-                    $("#editor").change( function() {
-
-                        currentContent = $("#editor").val();
-                        if(currentContent != loadedContent) {
-
-                            $("#save").attr("disabled", false);
-                        }
-                        else {
-                            
-                            $("#save").attr("disabled", true);
-                        }
-                    });
-
-                    // Bind a message to the before unload event to inform the user data may be lost.
-                    $(window).bind('beforeunload', function(){
-
-                        return "Are you sure you want to leave?\nChanges to your work my not be saved.";
-                    });
-
-                });
-
-                function responseFadeOut() {
-                    $("#saveResult").text("");
-                }
-            </script>
-
-            <button id="fileSelect" type="button">Open file</button>
-            <br />
+        <!-- TEXT EDITOR -->
+        <div class="text">
             <textarea id="editor"></textarea>
-            <br />
-            <div id="saveContainer">
-                <button id="save" disabled>Save Work</button>
-                <p id="saveResult"></p>
-            </div>
-            <hr />
-    </body>
+        </div>
+
+        <!-- SMALL FOOTER -->
+        <footer class="footer">A page by Conor and Tudor.</footer>
+    </div>
+
+    <script>
+        $(document).ready(function(){
+
+            var loadedContent="";
+            var selectedFile="";
+            var currentContent="";
+
+            // Request for getting the file names.
+            $.ajax({
+                url : 'php/index.php',
+                type : 'GET',
+                dataType : 'json',
+                success : function (result) {
+
+                    // Iterate through the the result of files and create options for them.
+                    jQuery.each(result, function(index, value){
+
+                        $("#fileList").append("<option value=\"" + result[index] + "\">" + result[index] + "</option>");
+                    });
+                }
+            });
+
+
+            // Request for getting the selected files when the "Open File" button is clicked.
+            $("#fileSelect").click( function() {
+
+                var select = document.getElementById("fileList");
+                selectedFile = select.options[select.selectedIndex].value;
+
+                $.ajax({
+                    url : 'php/index.php',
+                    tpye : 'GET',
+                    dataType : 'json',
+                    data : {file:$("#fileList").find(":selected").text()},
+                    success : function (result) {
+                        
+                        // Set the text of the text area to the files contents and save the original data.
+                        if(result['fileContent'] != false) {
+                            $("#editor").val(result['fileContent']);
+                            loadedContent = $("#editor").val();
+                        }
+                    }
+                });
+            });
+
+
+            // Save the files contents if any changes have occured.
+            $("#fileSave").click( function() {
+
+                currentContent = $("#editor").val();
+                if(currentContent != loadedContent) {
+                
+                    $.ajax({
+                        url : 'php/index.php',
+                        type : 'GET',
+                        dataType: 'json',
+                        data : { saveFile:selectedFile, saveContent:currentContent },
+                        success : function(result) {
+
+                            $("#saveResult").css("color", "darkgreen"); 
+                            $("#saveResult").text(result["writeResult"]);
+                            loadedContent = $("#editor").val();
+                            $("#fileSave").attr("disabled", true);
+                        },
+                        fail : function() {
+                            
+                            $("#saveResult").css("color", "darkred");
+                            $("#saveResult").text("Unable to save the file.");
+                        }
+                    });
+                }
+
+                setTimeout(responseFadeOut, 5000);
+            });
+
+
+            // If any text in the editor changes, check if the content is the orignal, or
+            // if anything has been added. If the ladder if true, enable the save button.
+            // Otherwise, disable it.
+            $("#editor").keyup( function() {
+
+                currentContent = $("#editor").val();
+                if(currentContent != loadedContent) {
+
+                    $("#fileSave").attr("disabled", false);
+                }
+                else {
+                    
+                    $("#fileSave").attr("disabled", true);
+                }
+            });
+
+
+            // If any text in the editor changes, check if the content is the orignal, or
+            // if anything has been added. If the ladder if true, enable the save button.
+            // Otherwise, disable it.
+            $("#editor").change( function() {
+
+                currentContent = $("#editor").val();
+                if(currentContent != loadedContent) {
+
+                    $("#fileSave").attr("disabled", false);
+                }
+                else {
+                    
+                    $("#fileSave").attr("disabled", true);
+                }
+            });
+
+            // Bind a message to the before unload event to inform the user data may be lost.
+            $(window).bind('beforeunload', function(){
+
+                return "Are you sure you want to leave?\nChanges to your work will not be saved.";
+            });
+
+        });
+
+        function responseFadeOut() {
+            $("#saveResult").text("");
+        }
+    </script>    
+
+</body>
 </html>

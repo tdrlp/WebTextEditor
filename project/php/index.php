@@ -69,7 +69,6 @@
         // Try to overwrite the file.
         // Send a failed message if it could not write.
         // Otherwise, send a saved message.
-
         if(!file_put_contents($fileToOpen, $contentToSave)) {
 
             $data["writeResult"] = "Failed to save the file.";

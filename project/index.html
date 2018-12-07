@@ -4,6 +4,8 @@
 
     File: index.html
 
+    Project: WDD - Assignment 07 - jQuery and JSON based Text Editor
+
     Programers: Conor Macpherson, Tudor Lupu
 
     First-version: 2018-12-06
@@ -16,178 +18,270 @@
 
 
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Assignment 7 - jQuery and JSON</title>
-    <link rel="stylesheet" href="css/styles.css">
-    <link rel="shortcut icon" href="#" />
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-</head>
-<body>
-    <div class="wrapper">
+    <head>
+        <meta charset="UTF-8">
+        <title>Assignment 7 - jQuery and JSON</title>
+        <link rel="stylesheet" href="css/styles.css">
+        <link rel="shortcut icon" href="#" />
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    </head>
+    <body>
+        <div class="wrapper">
 
-        <!-- TITLE OF THE PAGE -->
-        <div class="header"><h1>Web Text Editor</h1></div>
+            <!-- TITLE OF THE PAGE -->
+            <div class="header"><h1>Web Text Editor</h1></div>
 
-        <!-- INSTRUCTIONS FOR USER ON HOW TO USE PAGE -->
-        <div class="instructions">
-            <p><strong>Instructions:</strong> Select a file from the drop down below, make 
-                changes to it and then save your changes using the 'Save' button on the right side.</p>
+            <!-- INSTRUCTIONS FOR USER ON HOW TO USE PAGE -->
+            <div class="instructions">
+                <p><strong>Instructions:</strong> Select a file from the drop down below, make 
+                    changes to it and then save your changes using the 'Save' button on the right side.</p>
+            </div>
+
+            <!-- TEXT EDITOR CONTROLS -->
+            <div class="text-select">
+                <!-- DROP DOWN MENU FOR FILE SELECTION -->
+                <select id="fileList" name="file">
+                    <option value="\" selected disabled hidden>select a file...</option>
+                </select>
+
+                <!-- OPEN FILE BUTTON -->
+                <input id="fileSelect" type="button" value="Open File" />
+                
+                <!-- SAVE STATUS MESSAGE -->
+                <strong><span id="saveResult"></span></strong>
+
+                <!-- SAVE FILE BUTTON -->
+                <input id="fileSave" type="button" value="Save" style="float: right;" disabled />
+            </div>
+
+            <!-- TEXT EDITOR -->
+            <div class="text">
+                <textarea id="editor"></textarea>
+            </div>
+
+            <!-- SMALL FOOTER -->
+            <footer class="footer">A page by Conor and Tudor.</footer>
         </div>
 
-        <!-- TEXT EDITOR CONTROLS -->
-        <div class="text-select">
-            <!-- DROP DOWN MENU FOR FILE SELECTION -->
-            <select id="fileList" name="file">
-                <option value="\" selected disabled hidden>select a file...</option>
-            </select>
+        <!-- SCRIPT TO GET AND UPDATE TEXT FILES -->
+        <script>
+            $(document).ready(function(){
 
-            <!-- OPEN FILE BUTTON -->
-            <input id="fileSelect" type="button" value="Open File" />
-            
-            <!-- SAVE STATUS MESSAGE -->
-            <strong><span id="saveResult"></span></strong>
+                var loadedContent="";
+                var selectedFile="";
+                var currentContent="";
 
-            <!-- SAVE FILE BUTTON -->
-            <input id="fileSave" type="button" value="Save" style="float: right;" disabled />
-        </div>
-
-        <!-- TEXT EDITOR -->
-        <div class="text">
-            <textarea id="editor"></textarea>
-        </div>
-
-        <!-- SMALL FOOTER -->
-        <footer class="footer">A page by Conor and Tudor.</footer>
-    </div>
-
-    <!-- SCRIPT TO GET AND UPDATE TEXT FILES -->
-    <script>
-        $(document).ready(function(){
-
-            var loadedContent="";
-            var selectedFile="";
-            var currentContent="";
-
-            // Request for getting the file names.
-            $.ajax({
-                url : 'php/index.php',
-                type : 'GET',
-                dataType : 'json',
-                success : function (result) {
-
-                    // Iterate through the the result of files and create options for them.
-                    jQuery.each(result, function(index, value){
-
-                        $("#fileList").append("<option value=\"" + result[index] + "\">" + result[index] + "</option>");
-                    });
-                }
-            });
-
-
-            // Request for getting the selected files when the "Open File" button is clicked.
-            $("#fileSelect").click( function() {
-
-                var select = document.getElementById("fileList");
-                selectedFile = select.options[select.selectedIndex].value;
-
+                /*
+                *
+                * Inner Function: getFileName
+                *
+                * Inner Description: Adds select options containing the file names retrived from the server
+                *
+                * Inner Function Parameters: result - The JSON encoded data from the server
+                *
+                * Inner Returns: N/A
+                *
+                */
                 $.ajax({
                     url : 'php/index.php',
-                    tpye : 'GET',
+                    type : 'GET',
                     dataType : 'json',
-                    data : {file:$("#fileList").find(":selected").text()},
                     success : function (result) {
-                        
-                        // Set the text of the text area to the files contents and save the original data.
-                        if(result['fileContent'] != false) {
-                            $("#editor").val(result['fileContent']);
-                            loadedContent = $("#editor").val();
-                        }
+
+                        // Iterate through the the result of files and create options for them.
+                        jQuery.each(result, function(index, value){
+
+                            $("#fileList").append("<option value=\"" + result[index] + "\">" + result[index] + "</option>");
+                        });
                     }
                 });
-            });
 
 
-            // Save the files contents if any changes have occured.
-            $("#fileSave").click( function() {
+                /*
+                *
+                * Function: openFileEventHandler
+                *
+                * Description: Upon clicking the open file button, the function sends an ajax request to the server
+                *              which returns the contents of the file and sets the editors contents to the file content.
+                *
+                * Parameter: N/A
+                *
+                * Return: N/A
+                *
+                * Inner Function: N/A
+                *
+                * Inner Description: Adds select options containing the file names retrived from the server
+                *
+                * Inner Function Parameters: result - The JSON encoded data from the server
+                *
+                * Inner Returns: N/A
+                *
+                */
+                $("#fileSelect").click( function() {
 
-                currentContent = $("#editor").val();
-                if(currentContent != loadedContent) {
-                
+                    var select = document.getElementById("fileList");
+                    selectedFile = select.options[select.selectedIndex].value;
+
                     $.ajax({
                         url : 'php/index.php',
-                        type : 'GET',
-                        dataType: 'json',
-                        data : { saveFile:selectedFile, saveContent:currentContent },
-                        success : function(result) {
-
-                            if(result["writeResult"] == "File saved succesfuly.") {
-                                $("#saveResult").css("color", "darkgreen"); 
-                            }
-                            else {
-                                $("#saveResult").css("color", "darkred"); 
-                            }
-                            $("#saveResult").text(result["writeResult"]);
-                            loadedContent = $("#editor").val();
-                            $("#fileSave").attr("disabled", true);
-                        },
-                        fail : function() {
+                        tpye : 'GET',
+                        dataType : 'json',
+                        data : {file:$("#fileList").find(":selected").text()},
+                        success : function (result) {
                             
-                            $("#saveResult").css("color", "darkred");
-                            $("#saveResult").text("Unable to save the file.");
+                            // Set the text of the text area to the files contents and save the original data.
+                            if(result['fileContent'] != false) {
+                                $("#editor").val(result['fileContent']);
+                                loadedContent = $("#editor").val();
+                            }
                         }
                     });
-                }
-
-                setTimeout(responseFadeOut, 5000);
-            });
+                });
 
 
-            // If any text in the editor changes, check if the content is the orignal, or
-            // if anything has been added. If the ladder if true, enable the save button.
-            // Otherwise, disable it.
-            $("#editor").keyup( function() {
+                /*
+                *
+                * Function: saveFileClickEvent
+                *
+                * Description: Upon clicking the Save button, the contents of the editor are checked to see if its
+                *              the same as the orignally loaded content. If it is, then the save will not occur.
+                *              otherwise, the content of editor are saved to the file.
+                *
+                * Parameters: N/A
+                *
+                * Returns: N/A
+                *
+                * Inner Function: outputSaveResult
+                *
+                * Inner Description: Outputs the result message of the save with a color indicating a good result, or a bad result.
+                *
+                * Inner Parameters: result - The save result message in a json format.
+                *
+                * Inner Return: N/A
+                *
+                */
+                $("#fileSave").click( function() {
 
-                currentContent = $("#editor").val();
-                if(currentContent != loadedContent) {
-
-                    $("#fileSave").attr("disabled", false);
-                }
-                else {
+                    currentContent = $("#editor").val();
+                    if(currentContent != loadedContent) {
                     
-                    $("#fileSave").attr("disabled", true);
-                }
+                        $.ajax({
+                            url : 'php/index.php',
+                            type : 'GET',
+                            dataType: 'json',
+                            data : { saveFile:selectedFile, saveContent:currentContent },
+                            success : function(result) {
+
+                                if(result["writeResult"] == "File saved succesfuly.") {
+                                    $("#saveResult").css("color", "darkgreen"); 
+                                }
+                                else {
+                                    $("#saveResult").css("color", "darkred"); 
+                                }
+                                $("#saveResult").text(result["writeResult"]);
+                                loadedContent = $("#editor").val();
+                                $("#fileSave").attr("disabled", true);
+                            },
+                            fail : function() {
+                                
+                                $("#saveResult").css("color", "darkred");
+                                $("#saveResult").text("Unable to save the file.");
+                            }
+                        });
+                    }
+
+                    setTimeout(responseFadeOut, 5000);
+                });
+
+
+                /*
+                *
+                * Function: editorKeyUpEventHandler
+                *
+                * Description: Checks the content of the editor to see if it is the same as the orignally
+                *              loaded file content. If it is, the save file button is disabled. Otherwise,
+                *              it's enabled.
+                *
+                * Parameters: N/A
+                *
+                * Returns: N/A
+                *
+                */
+                $("#editor").keyup( function() {
+
+                    currentContent = $("#editor").val();
+                    if(currentContent != loadedContent) {
+
+                        $("#fileSave").attr("disabled", false);
+                    }
+                    else {
+                        
+                        $("#fileSave").attr("disabled", true);
+                    }
+                });
+
+
+                /*
+                *
+                * Function: editorChangedEventHandler
+                *
+                * Description: Checks the content of the editor to see if it is the same as the orignally
+                *              loaded file content. If it is, the save file button is disabled. Otherwise,
+                *              it's enabled.
+                *
+                * Parameters: N/A
+                *
+                * Returns: N/A
+                *
+                */
+                $("#editor").change( function() {
+
+                    currentContent = $("#editor").val();
+                    if(currentContent != loadedContent) {
+
+                        $("#fileSave").attr("disabled", false);
+                    }
+                    else {
+                        
+                        $("#fileSave").attr("disabled", true);
+                    }
+                });
+
+                // Bind a message to the before unload event to inform the user data may be lost.
+
+                /*
+                *
+                * Function: beforeUnloadBind
+                *
+                * Description: Binds a message to the beforeunload event. When the user tries to leave the page, they
+                *              are informed that any unsaved changes may be lost if they proceed.
+                *
+                * Parameters: N/A
+                *
+                * Returns: N/A
+                *
+                */
+                $(window).bind('beforeunload', function(){
+
+                    return "Are you sure you want to leave?\nChanges to your work will not be saved.";
+                });
+
             });
 
-
-            // If any text in the editor changes, check if the content is the orignal, or
-            // if anything has been added. If the ladder if true, enable the save button.
-            // Otherwise, disable it.
-            $("#editor").change( function() {
-
-                currentContent = $("#editor").val();
-                if(currentContent != loadedContent) {
-
-                    $("#fileSave").attr("disabled", false);
-                }
-                else {
-                    
-                    $("#fileSave").attr("disabled", true);
-                }
-            });
-
-            // Bind a message to the before unload event to inform the user data may be lost.
-            $(window).bind('beforeunload', function(){
-
-                return "Are you sure you want to leave?\nChanges to your work will not be saved.";
-            });
-
-        });
-
-        function responseFadeOut() {
-            $("#saveResult").text("");
-        }
-    </script>    
-
-</body>
+            /*
+            *
+            * Function: responseFadeOut
+            *
+            * Description: Makes the saveResult message dissapear.
+            *
+            * Parameters: N/A
+            *
+            * Returns: N/A
+            *
+            */
+            function responseFadeOut() {
+                $("#saveResult").text("");
+            }
+        </script>    
+    </body>
 </html>

@@ -3,6 +3,8 @@
 /*
  *  File: index.php
  *
+ *  Project: WDD - Assignment 07 - jQuery and JSON based Text Editor
+ * 
  *  Programers: Conor Macpherson, Tudor Lupu
  *
  *  First-version: 2018-12-06
@@ -20,15 +22,13 @@
     // Get the MyFiles absolute directroy.
     $myFilePath = $root . "\\MyFiles";
 
-    error_log("root = " . $root);
-
-    
     // If the MyFiles directroy does not exist, output an error and terminate the script.
     // Otherwise, get an array of files in the MyFiles directroy.
     if(!file_exists($myFilePath)) {
     
         die("The MyFiles directroy is missing!"); 
     }
+    
 
     // Get an array of files from the MyFiles directroy.
     $myFiles = scandir($myFilePath);
@@ -44,6 +44,7 @@
 
         $data['file' . strval($i)] = $myFiles[$i];
     }
+
 
     // Check if the server has recieved any requests.
     if($_SERVER["REQUEST_METHOD"] == "GET" && $_GET["file"] != null) {
@@ -82,6 +83,7 @@
         }
     }
     
+
     // Send the data encoded as json.
     echo json_encode($data);
 ?>

@@ -19,6 +19,9 @@
 
     // Get the MyFiles absolute directroy.
     $myFilePath = $root . "\\MyFiles";
+
+    error_log("root = " . $root);
+
     
     // If the MyFiles directroy does not exist, output an error and terminate the script.
     // Otherwise, get an array of files in the MyFiles directroy.

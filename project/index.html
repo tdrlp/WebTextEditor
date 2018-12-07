@@ -121,7 +121,12 @@
                         data : { saveFile:selectedFile, saveContent:currentContent },
                         success : function(result) {
 
-                            $("#saveResult").css("color", "darkgreen"); 
+                            if(result["writeResult"] == "File saved succesfuly.") {
+                                $("#saveResult").css("color", "darkgreen"); 
+                            }
+                            else {
+                                $("#saveResult").css("color", "darkred"); 
+                            }
                             $("#saveResult").text(result["writeResult"]);
                             loadedContent = $("#editor").val();
                             $("#fileSave").attr("disabled", true);

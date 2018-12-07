@@ -1,19 +1,19 @@
-<!--
-
-    File: index.php
-
-    Programers: Conor Macpherson, Tudor Lupu
-
-    First-version: 2018-12-06
-
-    Description: This file contains the php script for reading a directoy's files, sending the file names,
-                 sending file content, and saving edited contents.
-
-                 This script is used for the front-end text editing browser application.
-
--->
-
 <?php
+
+/*
+ *  File: index.php
+ *
+ *  Programers: Conor Macpherson, Tudor Lupu
+ *
+ *  First-version: 2018-12-06
+ *
+ *  Description: This file contains the php script for reading a directoy's files, sending the file names,
+ *               sending file content, and saving edited contents.
+ *
+ *                This script is used for the front-end text editing browser application.
+ *
+ */
+
     // Get the servers abosulte root directroy via the current working directroy.
     $root = dirname(getcwd());
 

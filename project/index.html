@@ -130,9 +130,13 @@
                         success : function (result) {
                             
                             // Set the text of the text area to the files contents and save the original data.
+                            // If the content of the file is empty, set the editors text as nothing.
                             if(result['fileContent'] != false) {
                                 $("#editor").val(result['fileContent']);
                                 loadedContent = $("#editor").val();
+                            }
+                            else {
+                                $("#editor").val("");
                             }
                         }
                     });

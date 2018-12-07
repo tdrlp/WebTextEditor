@@ -71,11 +71,11 @@
 
             // Request for getting the file names.
             $.ajax({
-                url : 'index.php',
+                url : 'php/index.php',
                 type : 'GET',
                 dataType : 'json',
                 success : function (result) {
-                    
+
                     // Iterate through the the result of files and create options for them.
                     jQuery.each(result, function(index, value){
 
@@ -92,7 +92,7 @@
                 selectedFile = select.options[select.selectedIndex].value;
 
                 $.ajax({
-                    url : 'index.php',
+                    url : 'php/index.php',
                     tpye : 'GET',
                     dataType : 'json',
                     data : {file:$("#fileList").find(":selected").text()},
@@ -115,7 +115,7 @@
                 if(currentContent != loadedContent) {
                 
                     $.ajax({
-                        url : 'index.php',
+                        url : 'php/index.php',
                         type : 'GET',
                         dataType: 'json',
                         data : { saveFile:selectedFile, saveContent:currentContent },

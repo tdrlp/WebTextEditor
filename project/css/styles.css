@@ -1,3 +1,17 @@
+/* 
+
+    File: styles.css
+
+    Programers: Conor Macpherson, Tudor Lupu
+
+    First-version: 2018-12-06
+
+    Description: This file contains all the styling for the text editor. It makes
+                everything look good and presentable. 
+
+*/
+
+/* SET THE GENERAL THINGS FOR THE PAGE */
 html, body {
     font-family: Arial;
     padding: 0;
@@ -7,6 +21,7 @@ html, body {
     color: #555555;
 }
 
+/* SET THE BACKGROUND IMAGE OF THE PAGE */
 body {
     background-image: url("../img/bg.jpg");
 }
@@ -15,6 +30,7 @@ h1 {
     font-size: 75px;
 }
 
+/* THE AREA WHERE THE FILES ARE VIEWED AND EDITED */
 textarea {
     font-family: Arial;
     width: 100%;
@@ -22,10 +38,12 @@ textarea {
     border: 1px solid lightgray;
 }
 
+/* HIGHLIGHT BORDER ON HOVER */
 textarea:hover {
     border: 1px solid black;
 }
 
+/* CONTAINER WRAPPING ALL THE CONTENT ON THE PAGE */
 .wrapper {
     width: 60%;
     height: 100%;
@@ -34,11 +52,13 @@ textarea:hover {
     right: 20%;
 }
 
+/* CONTAINER SUROUNDING THE TITLE OF THE PAGE */
 .header {
     text-align: center;
     margin-bottom: 3%;
 }
 
+/* CONTAINER WHERE THE INSTRUCTIONS ON HOW TO USE THE EDITOR ARE FOUND */
 .instructions {   
     text-align: center;
     margin-top: 10px;
@@ -52,21 +72,25 @@ textarea:hover {
 }
 
 
+/* CONTAINER WHERE ALL THE CONTROLS ARE FOUND */
 .text-select {
     padding-top: 10px;
     padding-bottom: 5px;   
 }
 
+/* CONTAINER SURROUNDING THE TEXT AREA */
 .text {
     padding-top: 10px;
     height: 40%;
 }
 
+/* CONTAINER WHERE THE SAVE STATUS IS DISPLAYED */
 #saveResult {
     padding-left: 25%;
     color: darkgreen;
 }
 
+/* THE CONTROLS: BUTTONS & DROP DOWN MENU */
 #fileSelect, #fileSave , select {
     border-radius: 2px;
     font-size: 16px;
@@ -97,6 +121,7 @@ select:hover {
     border: 1px solid black;
 }
 
+/* SMALL TEXT BELOW THE INPUT AREA */
 .footer {
     padding-top: 30px;
     font-size: 11px;
